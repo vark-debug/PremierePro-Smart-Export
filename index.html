@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="main.js"></script>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <!-- 标题 -->
+      <sp-heading>快速导出</sp-heading>
+      
+      <!-- 日志显示区域 -->
+      <div id="plugin-body" class="log-container"></div>
+      
+      <!-- 分隔线 -->
+      <sp-divider size="medium"></sp-divider>
+      
+      <!-- 导出格式选择 -->
+      <sp-label>导出格式</sp-label>
+      <sp-radio-group id="export-format-group" name="export-format">
+        <sp-radio value="h264" checked>H.264（默认）</sp-radio>
+        <sp-radio value="prores422">数字中间片（ProRes 422）</sp-radio>
+        <sp-radio value="prores444">带通道（ProRes 444）</sp-radio>
+      </sp-radio-group>
+      
+      <!-- 分隔线 -->
+      <sp-divider size="medium"></sp-divider>
+      
+      <!-- 主要操作按钮 -->
+      <sp-button id="btn-export" variant="cta" style="width: 100%;">
+        开始导出
+      </sp-button>
+      
+      <!-- 分隔线 -->
+      <sp-divider size="medium"></sp-divider>
+      
+      <!-- 清空日志按钮 -->
+      <sp-button id="clear-btn" variant="secondary" quiet style="width: 100%;">
+        清空日志
+      </sp-button>
+    </div>
+  </body>
+</html>

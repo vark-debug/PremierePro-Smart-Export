@@ -1,0 +1,71 @@
+body {
+  padding: 16px;
+  font-family: adobe-clean, sans-serif;
+  color: var(--uxp-host-text-color);
+  background-color: var(--uxp-host-background-color);
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 100%;
+}
+
+/* 日志容器 */
+.log-container {
+  min-height: 200px;
+  max-height: 400px;
+  overflow-y: auto;
+  padding: 12px;
+  background-color: var(--uxp-host-background-color-secondary);
+  border-radius: 4px;
+  font-size: 12px;
+  line-height: 1.5;
+  font-family: 'Courier New', monospace;
+}
+
+/* 开发者工具区域 */
+.dev-tools {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 0;
+}
+
+/* Spectrum 组件样式微调 */
+sp-heading {
+  margin: 0;
+}
+
+sp-label {
+  font-weight: bold;
+  margin-top: 4px;
+}
+
+sp-radio-group {
+  padding: 8px 0;
+}
+
+sp-radio {
+  margin: 4px 0;
+}
+
+sp-divider {
+  margin: 8px 0;
+}
+
+sp-button {
+  margin: 2px 0;
+}
+
+/* 日志内容样式 */
+.log-container span {
+  display: inline;
+}
+
+.log-container br {
+  display: block;
+  content: "";
+  margin: 2px 0;
+}
