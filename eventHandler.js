@@ -197,10 +197,21 @@ async function testCompleteWorkflow() {
       log(`导出格式: ${finalPresetName}`, "#888");
     }
     
+    // 步骤3.6: 获取用户自定义的项目名称
+    const projectNameInput = document.getElementById('project-name-input');
+    const customProjectName = projectNameInput ? projectNameInput.value.trim() : '';
+    
+    // 步骤3.7: 获取调色状态
+    const colorGradingGroup = document.getElementById('color-grading-group');
+    const colorGradingStatus = colorGradingGroup ? colorGradingGroup.selected : 'ungraded';
+    const gradingMarker = colorGradingStatus === 'graded' ? '_已调色' : '';
+    console.log(`调色状态: ${colorGradingStatus}, 标记: "${gradingMarker}"`);
+    
     // 步骤4: 检测版本并生成文件名
     const versionResult = await modules.fileVersioner.detectLatestVersionAndGenerateFilename(
       folderResult.exportFolder,
-      finalBitrate
+      finalBitrate,
+      customProjectName || null  // 传递自定义项目名称，为空则使用默认
     );
     
     if (!versionResult.success) {
@@ -208,13 +219,24 @@ async function testCompleteWorkflow() {
       return;
     }
     
-    log(`正在导出: ${versionResult.newFilename}`, "#0078D4");
+    // 在文件名中插入调色标记（在扩展名之前）
+    let finalFilename = versionResult.newFilename;
+    if (gradingMarker) {
+      const lastDot = finalFilename.lastIndexOf('.');
+      if (lastDot > 0) {
+        finalFilename = finalFilename.substring(0, lastDot) + gradingMarker + finalFilename.substring(lastDot);
+      } else {
+        finalFilename += gradingMarker;
+      }
+    }
+    
+    log(`正在导出: ${finalFilename}`, "#0078D4");
     log("请稍候...", "#888");
     
     // 步骤5: 执行导出
     const exportResult = await modules.sequenceExporter.exportCurrentSequence(
       folderResult.exportFolder,
-      versionResult.newFilename,
+      finalFilename,
       finalBitrate
     );
     
@@ -286,6 +308,148 @@ async function testCompleteWorkflow() {
 }
 
 /**
+ * 打开导出文件夹
+ */
+async function openExportFolder() {
+  try {
+    // 获取项目位置
+    const projectResult = await modules.projectLocationDetector.getProjectLocation();
+    if (!projectResult.success) {
+      console.log(`无法获取项目位置: ${projectResult.error}`);
+      return;
+    }
+    
+    // 获取导出文件夹
+    const folderResult = await modules.exportFolderManager.getOrCreateExportFolder(
+      projectResult.projectPath
+    );
+    if (!folderResult.success) {
+      console.log(`无法获取导出文件夹: ${folderResult.error}`);
+      return;
+    }
+    
+    const folderPath = folderResult.exportFolder.nativePath;
+    console.log(`正在打开文件夹: ${folderPath}`);
+    
+    // 使用 scriptRunner 模块打开文件夹
+    const result = await modules.scriptRunner.openFolder(folderPath);
+    
+    if (result.success) {
+      console.log("✅ 导出文件夹已打开！");
+    } else {
+      console.log(`❌ 打开失败: ${result.error}`);
+    }
+  } catch (error) {
+    console.error('打开文件夹异常:', error);
+  }
+}
+
+/**
+ * 刷新版本和码流信息显示
+ */
+async function refreshVersionInfo() {
+  try {
+    const bitrateDisplay = document.getElementById('bitrate-display');
+    const versionDisplay = document.getElementById('version-display');
+    const gradingDisplay = document.getElementById('grading-display');
+    const exportPathDisplay = document.getElementById('export-path-display');
+    const radioGroup = document.getElementById('export-format-group');
+    
+    if (!bitrateDisplay || !versionDisplay) return;
+    
+    // 获取项目位置
+    const projectResult = await modules.projectLocationDetector.getProjectLocation();
+    if (!projectResult.success) {
+      log(`⚠️ 无法刷新: ${projectResult.error}`, "#FF9800");
+      return;
+    }
+    
+    // 获取导出文件夹
+    const folderResult = await modules.exportFolderManager.getOrCreateExportFolder(
+      projectResult.projectPath
+    );
+    if (!folderResult.success) {
+      log(`⚠️ 无法刷新: ${folderResult.error}`, "#FF9800");
+      return;
+    }
+    
+    // 更新导出路径显示
+    if (exportPathDisplay && folderResult.exportFolder) {
+      exportPathDisplay.value = folderResult.exportFolder.nativePath;
+    }
+    
+    // 检测分辨率
+    const resolutionResult = await modules.resolutionDetector.detectResolution();
+    
+    // 确定码流
+    let finalBitrate = resolutionResult.success ? resolutionResult.bitrate : "10mbps";
+    const selectedFormat = radioGroup ? radioGroup.selected : null;
+    
+    if (selectedFormat === "prores422") {
+      finalBitrate = "prores422";
+    } else if (selectedFormat === "prores444") {
+      finalBitrate = "prores444";
+    }
+    
+    // 获取用户自定义的项目名称
+    const projectNameInput = document.getElementById('project-name-input');
+    const customProjectName = projectNameInput ? projectNameInput.value.trim() : '';
+    
+    // 检测版本
+    const versionResult = await modules.fileVersioner.detectLatestVersionAndGenerateFilename(
+      folderResult.exportFolder,
+      finalBitrate,
+      customProjectName || null
+    );
+    
+    if (versionResult.success) {
+      bitrateDisplay.value = `_${finalBitrate}`;
+      versionDisplay.value = `_V${versionResult.newVersion}`;
+      console.log(`版本信息已刷新: ${finalBitrate}, V${versionResult.newVersion}`);
+      
+      // 更新调色状态UI
+      const colorGradingGroup = document.getElementById('color-grading-group');
+      if (colorGradingGroup && versionResult.colorGrading) {
+        colorGradingGroup.selected = versionResult.colorGrading;
+        console.log(`调色状态已更新: ${versionResult.colorGrading}`);
+      }
+      
+      // 更新调色状态显示框
+      if (gradingDisplay) {
+        const currentGradingStatus = colorGradingGroup ? colorGradingGroup.selected : 'ungraded';
+        gradingDisplay.value = currentGradingStatus === 'graded' ? '_已调色' : '';
+        console.log(`调色状态显示已更新: "${gradingDisplay.value}"`);
+      }
+    }
+    
+  } catch (error) {
+    console.error('刷新版本信息失败:', error);
+  }
+}
+
+/**
+ * 初始化项目名称输入框
+ */
+async function initializeProjectNameInput() {
+  const projectNameInput = document.getElementById('project-name-input');
+  if (!projectNameInput) return;
+  
+  try {
+    // 获取并显示项目名称
+    const projectName = await modules.fileVersioner.getCleanProjectName();
+    projectNameInput.value = projectName;
+    projectNameInput.placeholder = projectName;
+    console.log(`项目名称已加载: ${projectName}`);
+    
+    // 初始化版本信息显示
+    await refreshVersionInfo();
+  } catch (error) {
+    console.error('加载项目名称失败:', error);
+    projectNameInput.placeholder = "导出";
+  }
+}
+
+/**
  * 初始化事件监听器
  */
 function initializeEventHandlers() {
@@ -305,11 +469,50 @@ function initializeEventHandlers() {
   if (btnExport) {
     btnExport.addEventListener("click", testCompleteWorkflow);
   }
+  
+  // 刷新按钮
+  const refreshBtn = document.querySelector("#refresh-btn");
+  if (refreshBtn) {
+    refreshBtn.addEventListener("click", refreshVersionInfo);
+  }
+  
+  // 打开导出文件夹按钮
+  const openFolderBtn = document.querySelector("#open-folder-btn");
+  if (openFolderBtn) {
+    openFolderBtn.addEventListener("click", openExportFolder);
+  }
+  
+  // 监听导出格式变化，自动刷新版本信息
+  const radioGroup = document.getElementById('export-format-group');
+  if (radioGroup) {
+    radioGroup.addEventListener("change", refreshVersionInfo);
+  }
+  
+  // 监听调色状态变化（暂不刷新版本信息，因为调色标记不影响版本号检测）
+  const colorGradingGroup = document.getElementById('color-grading-group');
+  if (colorGradingGroup) {
+    colorGradingGroup.addEventListener("change", () => {
+      const selected = colorGradingGroup.selected;
+      console.log(`调色状态已变更为: ${selected}`);
+      
+      // 更新调色状态显示框
+      const gradingDisplay = document.getElementById('grading-display');
+      if (gradingDisplay) {
+        gradingDisplay.value = selected === 'graded' ? '_已调色' : '';
+      }
+    });
+  }
+  
+  // 初始化项目名称输入框
+  initializeProjectNameInput();
 }
-
+openExportFolder,
+  
 // 导出模块函数
 module.exports = {
   initializeEventHandlers,
+  initializeProjectNameInput,
+  refreshVersionInfo,
   log,
   clearLog
 };

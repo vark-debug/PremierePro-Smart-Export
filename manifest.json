@@ -2,7 +2,7 @@
   "id": "Test-hyor2v",
   "name": "快速导出",
   "shortname": "3pstarterplugin",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "index.html",
   "host": {
     "app": "premierepro",
@@ -39,7 +39,7 @@
         "height": 300
       },
       "label": {
-        "default": "PremierePro Starter Panel Project"
+        "default": "快速导出"
       },
       "icons": [
         {

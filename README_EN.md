@@ -1,6 +1,29 @@
 # Quick Export - Premiere Pro UXP Plugin
 
+![Version](https://img.shields.io/badge/version-1.0.1-blue) ![Premiere Pro](https://img.shields.io/badge/Premiere%20Pro-25.6.3%2B-purple) ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS-lightgrey)
+
 One-click export plugin for Premiere Pro sequences with intelligent preset management, output folder handling, and smart file versioning.
+
+## 📦 Version Information
+
+**Current Version**: V1.0.1 (2026-01-21)
+
+### 🆕 What's New in V1.0.1
+
+#### New Features
+- ✨ **Custom Project Name**: Modify project name before export while maintaining version continuity
+- 🎨 **Color Grading Status**: New color grading status selector (Graded/Ungraded)
+  - Auto-detects existing files' grading status and syncs to UI
+  - Recognizes markers: `已调色`, `调色`, `graded`, `cc`, etc.
+  - Automatically appends `_已调色` marker to export filename
+- 📊 **Streamlined UI**: Removed large log area, replaced with single-line status display
+  - Real-time display: Project Name + Bitrate + Version + Grading Status
+  - Cleaner, more professional UI layout
+
+#### Improvements
+- 🔄 Quick refresh button to update version info instantly
+- 📁 Optimized export path display for direct output location view
+- 🎯 More compact UI layout for improved efficiency
 
 ## 💡 Design Philosophy
 
@@ -33,11 +56,19 @@ This plugin is a **productization of "my workflow"**. I've solidified the most c
   ```
   Existing file: ProjectName-V3.mp4
   New export: ProjectName_10mbps_V4.mp4
+  With grading: ProjectName_10mbps_V5_已调色.mp4
   ```
+- **Custom Project Name**: Modify project name before export while version numbering continues automatically
+- **Color Grading Status** (🆕 V1.0.1):
+  - Manually select current export's grading status (Graded/Ungraded)
+  - Auto-detects existing files' grading markers and syncs to UI
+  - Automatically appends `_已调色` marker to filename for easy delivery stage identification
 
 ### 🖱️ Convenient Operations
+- **Single-Line Status Display** (🆕 V1.0.1): Real-time display of project name, bitrate, version, and grading status at top
+- **Quick Refresh** (🆕 V1.0.1): Instantly refresh version info and grading status without reloading plugin
 - **One-Click Open Export Folder**: Quickly access file location after export completion
-- **Cross-Platform Support**: Automatic adaptation for Mac (Finder) and Windows (Explorer) - Windows support not yet tested but theoretically functional
+- **Cross-Platform Support**: Full support for Mac (Finder) and Windows (Explorer)
 
 ## 🚀 Installation & Usage
 
@@ -75,9 +106,11 @@ This plugin is a **productization of "my workflow"**. I've solidified the most c
 
 1. **Open Project**: Ensure your Premiere Pro project is saved
 2. **Select Sequence**: Activate the sequence you want to export
-3. **Choose Format**: Select export format in the plugin panel (default H.264)
-4. **Start Export**: Click the "Start Export" button
-5. **View Results**: After export completion, click "Open Export Folder" button to view files
+3. **Customize Name** (Optional): Modify project name in the input field if needed
+4. **Choose Format**: Select export format in the plugin panel (default H.264)
+5. **Set Grading Status** (🆕 V1.0.1): Choose whether the export is color graded or ungraded
+6. **Start Export**: Click the "Start Export" button
+7. **View Results**: After export completion, click "Open Export Folder" button to view files
 
 ## 🗂️ Project Structure
 
@@ -133,7 +166,7 @@ This plugin is a **productization of "my workflow"**. I've solidified the most c
 ## ⚠️ Testing Status
 
 - ✅ **macOS**: Fully tested, functioning normally (with above mentioned authorization dialog issue)
-- ⚠️ **Windows**: Not yet tested, theoretically supported but requires verification
+- ✅ **Windows**: Fully tested, functioning normally
 - ⚠️ **CCX Plugin Package**: Built but not fully tested, developer mode loading recommended
 
 ## 📝 Development Notes

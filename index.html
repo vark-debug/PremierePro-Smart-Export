@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+0<!DOCTYPE html>
 <html>
   <head>
     <script src="main.js"></script>
@@ -9,34 +9,98 @@
       <!-- 标题 -->
       <sp-heading>快速导出</sp-heading>
       
-      <!-- 日志显示区域 -->
-      <div id="plugin-body" class="log-container"></div>
+      <!-- 分隔线 -->
+      <sp-divider size="medium" style="margin: 12px 0;"></sp-divider>
+      
+      <!-- 项目名称输入框 -->
+      <sp-field-label for="project-name-input" style="font-size: 18px; font-weight: 600; color: floralwhite; margin-bottom: 6px; display: block;">
+        项目名称
+      </sp-field-label>
+      <div style="display: flex; gap: 2px; align-items: center; margin-bottom: 8px;">
+        <sp-textfield 
+          id="project-name-input" 
+          placeholder="正在加载项目名称..." 
+          style="flex: 1; min-width: 0;">
+        </sp-textfield>
+        <sp-textfield 
+          id="bitrate-display" 
+          value="_10mbps"
+          readonly
+          quiet
+          style="width: 85px; text-align: center; flex-shrink: 0;">
+        </sp-textfield>
+        <sp-textfield 
+          id="version-display" 
+          value="_V1"
+          readonly
+          quiet
+          style="width: 50px; text-align: center; flex-shrink: 0;">
+        </sp-textfield>
+        <sp-textfield 
+          id="grading-display" 
+          value=""
+          readonly
+          quiet
+          style="width: 80px; text-align: center; flex-shrink: 0;">
+        </sp-textfield>
+      </div>
+      
+      <!-- 操作按钮组 -->
+      <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+        <sp-button id="refresh-btn" variant="cta" style="margin-right: 8px;">
+          🔄 刷新
+        </sp-button>
+        <sp-button id="open-folder-btn" variant="secondary">
+          📁 打开导出文件夹
+        </sp-button>
+      </div>
       
       <!-- 分隔线 -->
-      <sp-divider size="medium"></sp-divider>
+      <sp-divider size="medium" style="margin: 12px 0;"></sp-divider>
       
       <!-- 导出格式选择 -->
-      <sp-label>导出格式</sp-label>
-      <sp-radio-group id="export-format-group" name="export-format">
+      <sp-field-label style="font-size: 18px; font-weight: 600; color: floralwhite; margin-bottom: 6px; display: block;">
+        导出格式
+      </sp-field-label>
+      <sp-radio-group id="export-format-group" name="export-format" style="margin-bottom: 12px;">
         <sp-radio value="h264" checked>H.264（默认）</sp-radio>
         <sp-radio value="prores422">数字中间片（ProRes 422）</sp-radio>
         <sp-radio value="prores444">带通道（ProRes 444）</sp-radio>
       </sp-radio-group>
       
       <!-- 分隔线 -->
-      <sp-divider size="medium"></sp-divider>
+      <sp-divider size="medium" style="margin: 12px 0;"></sp-divider>
+      
+      <!-- 调色状态选择 -->
+      <sp-field-label style="font-size: 18px; font-weight: 600; color: floralwhite; margin-bottom: 6px; display: block;">
+        调色状态
+      </sp-field-label>
+      <sp-radio-group id="color-grading-group" name="color-grading" style="margin-bottom: 12px;">
+        <sp-radio value="ungraded" checked>未调色</sp-radio>
+        <sp-radio value="graded">已调色</sp-radio>
+      </sp-radio-group>
+      
+      <!-- 分隔线 -->
+      <sp-divider size="medium" style="margin: 12px 0;"></sp-divider>
+      
+      <!-- 导出路径显示 -->
+      <sp-field-label for="export-path-display" style="font-size: 18px; font-weight: 600; color: floralwhite; margin-bottom: 6px; display: block;">
+        导出路径
+      </sp-field-label>
+      <sp-textfield 
+        id="export-path-display" 
+        placeholder="等待检测..." 
+        readonly
+        quiet
+        style="width: 100%; margin-bottom: 12px;">
+      </sp-textfield>
+      
+      <!-- 分隔线 -->
+      <sp-divider size="medium" style="margin: 12px 0;"></sp-divider>
       
       <!-- 主要操作按钮 -->
       <sp-button id="btn-export" variant="cta" style="width: 100%;">
         开始导出
-      </sp-button>
-      
-      <!-- 分隔线 -->
-      <sp-divider size="medium"></sp-divider>
-      
-      <!-- 清空日志按钮 -->
-      <sp-button id="clear-btn" variant="secondary" quiet style="width: 100%;">
-        清空日志
       </sp-button>
     </div>
   </body>
