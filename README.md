@@ -1,3 +1,4 @@
+本插件已全部迁移至 **Bolt UXP** 框架构建，因此封档
 # 快速导出 (Quick Export) - Premiere Pro 智能导出插件
 
 ![Version](https://img.shields.io/badge/version-1.0.1-blue) ![Premiere Pro](https://img.shields.io/badge/Premiere%20Pro-25.6.3%2B-purple) ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS-lightgrey)
@@ -153,6 +154,7 @@
 ## 🙋 支持
 
 如有问题或建议，欢迎提交 Issue 反馈。
+
 
 
 
